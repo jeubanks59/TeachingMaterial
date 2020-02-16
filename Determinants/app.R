@@ -1,12 +1,3 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 library(tidyverse)
 library(ggthemes)
@@ -74,6 +65,9 @@ server <- function(input, output) {
             geom_line()+
             scale_color_stata()+
             theme_bw()+
+            xlab("Q, Millions of tons of coffee per year")+
+            ylab("p, $ per lb")+
+            theme(legend.position = "none")+
             geom_dl(aes(label = Function), method = list(dl.combine( "last.points"), cex = 0.8))
         
     })
