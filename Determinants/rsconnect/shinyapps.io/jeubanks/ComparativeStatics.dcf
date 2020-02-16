@@ -1,0 +1,12 @@
+name: ComparativeStatics
+title: ComparativeStatics
+username:
+account: jeubanks
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1818109
+bundleId: 2803885
+url: https://jeubanks.shinyapps.io/ComparativeStatics/
+when: 1581828313.41585
+asMultiple: FALSE
+asStatic: FALSE
