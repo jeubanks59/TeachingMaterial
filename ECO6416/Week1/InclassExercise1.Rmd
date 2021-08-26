@@ -1,0 +1,122 @@
+---
+title: "In Class Exercise 1"
+author: "Joshua L Eubanks"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(scipen = 999)
+
+library(readxl)
+library(gtsummary)
+library(tidyverse)
+library(plotly)
+
+```
+
+First, we are going to bring in two datasets. One is on CEO compensation for the IT industry (2019). The second is a reduced dataset about the sales price of tractors
+
+```{r datasets}
+CEO <- read_excel("../data/CEOCompIT.xlsx")
+Tractor <- read_excel("../data/TractorBivariate.xlsx")
+```
+
+# CEO Compensation
+
+## Summary Statistics
+
+```{r ceo summary}
+summary(CEO)
+sd(CEO$`Total Compensation`)
+
+```
+
+### Upgraded Summary Statistics
+
+```{r upgraded summary ceo}
+
+CEO%>% select(`Total Compensation`) %>% 
+  tbl_summary(statistic = list(all_continuous() ~ c("{mean} ({sd})",
+                                                    "{median} ({p25}, {p75})",
+                                                    "{min}, {max}"),
+                              all_categorical() ~ "{n} / {N} ({p}%)"),
+              type = all_continuous() ~ "continuous2")
+```
+
+
+## Histogram
+
+```{r hist ceo}
+hist(CEO$`Total Compensation`, breaks = 'fd')
+```
+
+### Upgraded Histogram
+
+```{r upgraded hist ceo}
+CEO$CompensationMillions <- CEO$`Total Compensation`/1000000
+binsize <- 2*IQR(CEO$CompensationMillions)/length(CEO$CompensationMillions)^(1/3)
+
+ggplot(CEO, aes(CompensationMillions))+ 
+  geom_histogram(binwidth = binsize,col = 'black', fill = 'darkblue', alpha = 0.5)+
+  labs(title = 'Distribution of CEO Compensation in IT Industry 2019', caption = "(SourceAFL-CIO)",x = 'Compensation [millions]', y= 'Frequency')+
+  theme_bw()
+
+
+```
+
+## Boxplot
+```{r base boxplot ceo}
+boxplot(CEO$CompensationMillions)
+```
+
+
+### Upgraded Boxplot
+
+```{r upgraded boxplot ceo}
+plot_ly(y = CEO$CompensationMillions, type = 'box', name = 'Compensation [millions]',text = paste(CEO$Company,"-", CEO$Name)) %>% 
+  layout(title = 'Distribution of CEO Compensation in IT Industry 2019')
+```
+
+
+# Tractor 
+
+## Summary Statistics
+
+```{r}
+
+
+```
+## Histogram
+
+```{r}
+
+```
+
+## Boxplot
+
+```{r}
+
+```
+
+## Scatterplot and Correlation
+
+```{r}
+plot(Tractor$HorsePower, Tractor$`Sales Price`)
+
+cor(Tractor$`Sales Price`,Tractor$HorsePower)
+```
+
+### Upgraded Scatterplot
+```{r, message=F}
+ggplot(Tractor,aes(HorsePower, `Sales Price`))+
+  geom_point(color = 'gray40')+
+  geom_smooth(method = "lm", se = F, color = 'darkblue')+
+  theme_bw()+
+  labs(title = "Relationship between Horsepower and Sales Price of Tractors")
+```
