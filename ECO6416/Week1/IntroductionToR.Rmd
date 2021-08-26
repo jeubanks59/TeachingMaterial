@@ -1,0 +1,255 @@
+---
+title: "Getting Started"
+author: "Joshua L Eubanks"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Installing and Using Packages
+
+For an example, let's install the package swirl:
+
+```{r,eval=FALSE}
+install.packages(swirl)
+```
+
+This command pulls and stores the package into your library. If you want to actually use it, you must pull it from your library:
+
+```{r, eval=FALSE}
+library(swirl)
+```
+
+
+## Help
+
+swirl is an important package for beginners because it will show you how to do the basics step by step.
+
+Also if you need help with any commands, you can put a question mark before a command to understand how to use it.
+
+`?merge`
+
+Search by keywords:
+`??matrix`
+`??"identity matrix"`
+
+
+
+# Basic commands
+
+R can be used as a basic calculator
+```{r}
+5 + 2
+```
+
+
+There will be times that you wish to store certain calulations for future use. To store this calculation you would need to assign it to an object.
+
+```{r}
+LuckyNumber <- 5 + 2
+```
+
+You may want to call that object later:
+```{r}
+UnluckyNumber <- LuckyNumber + 6
+
+UnluckyNumber
+```
+
+
+
+
+## Creating vectors and Matrices
+
+```{r}
+
+v1 <- 1:5
+v2 <- c(1,1,3,3,3,3.22225,4,5, NA)
+v3 <- c("Bill", "Stacey", "John")
+
+matrix <- matrix(1:100, nrow = 10)
+
+
+```
+
+## Descriptive Statistics
+```{r}
+mean(v1)
+median(v1)
+sd(v1)
+range(v1)
+
+```
+
+One thing to note is that observations that are NA will not be counted as zero, it will cause issues:
+```{r}
+mean(v2)
+```
+
+You can fix this by dropping NAs:
+
+```{r}
+mean(v2, na.rm = TRUE)
+```
+
+
+
+If you want to understand the structure of your object:
+```{r}
+class(UnluckyNumber)
+class(v1)
+class(v3)
+
+```
+
+## Example
+
+Let's find the linear combination between two variables. Lets say x has values of 23, 37, 32, 41, 51 and y has values of 27, 27, 24, 28, 31 respectively.
+
+```{r}
+x <- c(23,37,32,41,51) 
+y <- c(27,27,24,28,31) 
+```
+
+The formula for the correlation coefficient **(r)** is:
+
+$$r = \frac{n\Sigma xy - \Sigma x \Sigma y}{\sqrt{[n\Sigma x^{2} - (\Sigma x)^2]\cdot[n\Sigma y^{2} - (\Sigma y)^2]}}$$
+
+Let's collect all those variables for the formula:
+
+```{r}
+sum_x <- sum(x)
+
+
+sum_y <-sum(y)
+
+xy <- x * y
+sum_xy <-sum(xy)
+
+y_sq <- y * y
+sum_y2 <-sum(y_sq)
+
+x_sq <- x * x
+sum_x2 <-sum(x_sq)
+
+n <- 5
+
+```
+
+Now run that formula:
+
+```{r}
+r <- ((n * sum_xy) - (sum_y * sum_x)) / (sqrt((n * sum_x2 - (sum_x)^2) * (n * sum_y2-(sum_y)^2)))
+r
+```
+
+
+# Dataframes
+
+A simpler solution to the previous example would be:
+
+```{r}
+data_frame <- data.frame(x,y)
+cor(data_frame)
+```
+
+
+
+
+# Linear regression
+
+```{r}
+simpleRegression <- lm(y ~ x, data_frame)
+summary(simpleRegression)
+```
+
+
+
+
+# Working with a real dataset
+
+```{r}
+data <- mtcars
+
+mean(data$mpg)
+range(data$cyl)
+class(data$am)
+
+summary(mtcars)
+
+```
+
+
+
+# Linear Regression and Prediction
+
+```{r}
+regression <- lm(mpg ~ cyl + disp + hp + factor(am), data)
+
+summary(regression)
+```
+
+Making a prediction about the mpg for a particular car:
+
+```{r}
+predict(regression,data.frame(cyl = 6, disp = 160, hp = 93, am = 1),level = .95, interval="confidence")
+```
+
+
+## Pulling stuff from regression
+
+```{r}
+Beta_1 <- summary(regression)$coefficients[2]
+SE_Beta_3 <- coef(summary(regression))[4, 2]
+```
+
+
+
+# Anova
+
+```{r}
+regression_reduced <- lm(mpg ~ cyl + disp + hp, data)
+anova(regression_reduced, regression)
+```
+
+
+# Graphing
+
+```{r}
+plot(x, y)  
+abline(simpleRegression)
+```
+
+
+For a dotted regression line, all you need to do is change the arguement: `abline(regression, lty=2)`
+
+
+## Using ggplot2
+
+```{r}
+library(ggplot2)
+qplot(mpg, data=data, geom="density", alpha=I(.5),
+      main="Distribution of mpg", xlab="Miles per Gallon [mpg]",
+      ylab="Density")
+qplot(factor(am), mpg, data=data, geom=c("boxplot", "jitter"),
+       main="Miles per Gallon by Transmission Type",
+      xlab="Transmission type", ylab="mpg")
+```
+
+
+
+
+
+## Barplots
+```{r}
+barplot(x)
+```
+
+

@@ -1,0 +1,233 @@
+---
+title: "Review"
+author: "Joshua L Eubanks"
+date: "11/30/2020"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+library(gt)
+library(tidyverse)
+library(gtsummary)
+library(plotly)
+
+getModes <- function(x) {
+  ux <- unique(x)
+  tab <- tabulate(match(x, ux))
+  ux[tab == max(tab)]
+}
+
+set.seed(123457)
+```
+
+
+# Items from Key Terms
+
+Refer to slide 5 on the PowerPoint entitled **Lecture 1 Data and Descriptive Statistics** for definitions 
+
+## Mode
+
+```{r}
+getModes(mtcars$cyl)
+```
+
+
+## Frequency Distribution and Histograms
+
+#### Categorical Data
+
+```{r}
+table(iris$Species) %>% data.frame() %>% gt() %>% cols_label(Var1 = 'Species')
+
+ggplot(iris, aes(Species))+ 
+  geom_histogram(stat = "count", col = 'black', fill = 'darkblue', alpha = 0.75)+
+  labs(title = 'Distribution of Plant Species')+
+  theme_bw()
+  
+```
+
+#### Quantatitive Data
+
+```{r}
+bins <- seq(10,34,by = 2)
+
+mpg <- cut(mtcars$mpg,bins)
+
+freqDist <- table(mpg) %>% data.frame()
+gt(freqDist)
+
+
+# Binning using ggplot
+ggplot(mtcars, aes(mpg))+ 
+  geom_histogram(binwidth = 2,col = 'black', fill = 'darkblue', alpha = 0.75)+
+  labs(title = 'Distribution of Miles Per Gallon', caption = "1974 Motor Trend US Magazine")+
+  theme_bw()
+
+# Using manual binning method
+ggplot(freqDist, aes(mpg,Freq))+ 
+  geom_col(col = 'black', fill = 'darkblue', alpha = 0.75)+
+  labs(title = 'Distribution of Miles Per Gallon',
+       caption = "Data is from 1974 Motor Trend US Magazine",
+       y = 'Frequency',
+       x= "Miles Per Gallon")+
+  theme_bw()
+
+```
+
+### Unimodal Example
+
+```{r}
+#Symmetric
+
+rating <- c(rep(1,10), rep(2,20), rep(3,30),rep(4,20),rep(5,10))
+
+freqDist <- table(rating) %>% data.frame()
+gt(freqDist)
+
+
+ggplot(freqDist, aes(rating,Freq))+ 
+  geom_col(col = 'black', fill = 'darkblue', alpha = 0.75)+
+  labs(title = 'Distribution of Ratings for Local Restaurant')+
+  theme_bw()
+
+#Asymmetric
+
+rating <- c(rep(1,10), rep(2,20), rep(3,30),rep(4,60),rep(5,35))
+
+freqDist <- table(rating) %>% data.frame()
+gt(freqDist)
+
+
+ggplot(freqDist, aes(rating,Freq))+ 
+  geom_col(col = 'black', fill = 'darkblue', alpha = 0.75)+
+  labs(title = 'Distribution of Ratings for Local Restaurant')+
+  theme_bw()
+
+
+```
+
+### Bimodal Example
+
+```{r}
+#Symmetric
+
+rating <- c(rep(1,20), rep(2,40), rep(3,10),rep(4,40),rep(5,20))
+
+freqDist <- table(rating) %>% data.frame()
+gt(freqDist)
+
+
+ggplot(freqDist, aes(rating,Freq))+ 
+  geom_col(col = 'black', fill = 'darkblue', alpha = 0.75)+
+  labs(title = 'Distribution of Ratings for Local Restaurant')+
+  theme_bw()
+
+#Asymmetric
+
+rating <- c(rep(1,30), rep(2,10), rep(3,30),rep(4,15),rep(5,5))
+
+freqDist <- table(rating) %>% data.frame()
+gt(freqDist)
+
+
+ggplot(freqDist, aes(rating,Freq))+ 
+  geom_col(col = 'black', fill = 'darkblue', alpha = 0.75)+
+  labs(title = 'Distribution of Ratings for Local Restaurant')+
+  theme_bw()
+
+
+```
+
+# Summary Statistics
+
+```{r}
+# Base
+summary(mtcars %>% select(mpg, cyl,hp))
+
+#Upgraded
+mtcars%>% select(mpg, cyl,hp) %>% 
+  tbl_summary(statistic = list(all_continuous() ~ c("{mean} ({sd})",
+                                                    "{median} ({p25}, {p75})",
+                                                    "{min}, {max}"),
+                              all_categorical() ~ "{n} / {N} ({p}%)"),
+              type = all_continuous() ~ "continuous2"
+  )
+
+```
+
+## Box Plot
+
+Sometimes it is easier to view this data in a box plot. Potential outliers are recognized outside the upper and lower fence. The upper and lower fences are calculated as follows:
+
+$$Upper Fence = Q3 + (1.5 * IQR)$$
+$$Lower Fence = Q1 – (1.5 * IQR)$$
+
+```{r}
+
+plot_ly(y = starwars$height, type = 'box', name = 'Height [cm]',text = starwars$name) %>% 
+  layout(title = 'Distribution of Star Wars Character Heights')
+```
+
+## Scatter Plots
+
+```{r}
+
+plot_ly(starwars, y = ~mass, x = ~height, type = 'scatter',text = ~name)
+
+```
+
+## Trends
+
+
+```{r}
+ggplot(starwars,aes(height, mass))+
+  geom_point(color = 'gray40')+
+  geom_smooth(method = "lm", se = F, color = 'darkblue')+
+  theme_bw()+
+  labs(title = "Relationship between Mass and Height of Star Wars Characters")
+```
+
+
+```{r}
+cor(starwars$height,starwars$mass, use = "complete.obs")
+
+```
+
+```{r}
+
+starwarsNoJabba <- starwars %>% filter(mass < 400)
+
+ggplot(starwarsNoJabba,aes(height, mass))+
+  geom_point(color = 'gray40')+
+  geom_smooth(method = "lm", se = F, color = 'darkblue')+
+  theme_bw()+
+  labs(title = "Relationship between Mass and Height of Star Wars Characters",
+       caption = "*Excluding Jabba the Hutt")
+
+cor(starwarsNoJabba$height,starwarsNoJabba$mass, use = "complete.obs")
+
+
+```
+
+## Time Series
+
+```{r}
+?sp500
+
+ggplot(sp500, aes(date, high))+
+  geom_line(color = 'gray40',alpha = 0.75)+
+  geom_smooth(method = "lm", se = F, color = 'darkblue', linetype = 'dashed')+
+  theme_bw()+
+  labs(title = "Trading Volume of the S&P 500 Over Time",
+       subtitle = 'from 1950-2015',
+       x = "Date",
+       y = "Volume")
+
+```
+
