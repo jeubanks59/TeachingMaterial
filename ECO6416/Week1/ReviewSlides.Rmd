@@ -282,18 +282,6 @@ ggplot(sp500, aes(date, high))+
 - A *trend line* is a straight line that approximates the linear relationship between a time series variable and time itself.  The slope of the trend line is the trend rate.
 - A *scatterplot* is a two-dimensional plot of bivariate data in which each observation is represented as a plotted point on the graph and the coordinates of each point measure the values of each of the two variables for the corresponding observation.
 
-## Version Control
-
-An important process for any individual is to ensure that you have the ability to track your code or any work. For this course, we will be using *git*. This will act as your version control throughout the course.
-
-If you are using a Mac, open the terminal and run these two lines of code:
-
-- /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-- brew install git
-
-If you are using Windows:
-
-- https://git-scm.com/download/win
 
 ## R and RStudio
 
@@ -334,3 +322,16 @@ We are only going to cover R in this course, however, there are many other langu
 - SQL: https://mode.com/sql-tutorial/
 - python: https://mode.com/python-tutorial/
   - Quantitative Economics: https://quantecon.org/
+  
+## Optional: Version Control
+
+An important process for any individual is to ensure that you have the ability to track your code or any work. For this course, we will be using *git*. This will act as your version control throughout the course.
+
+If you are using a Mac, open the terminal and run these two lines of code:
+
+- /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+- brew install git
+
+If you are using Windows:
+
+- https://git-scm.com/download/win
