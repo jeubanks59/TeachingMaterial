@@ -1,7 +1,7 @@
 ---
 title: "Review"
 author: "Joshua L Eubanks"
-date: "11/30/2020"
+date: "University of Central Florida"
 output: 
   html_document:
     toc: true
@@ -29,7 +29,7 @@ set.seed(123457)
 
 # Items from Key Terms
 
-Refer to slide 5 on the PowerPoint entitled **Lecture 1 Data and Descriptive Statistics** for definitions 
+Refer to review slides for definitions.
 
 ## Mode
 
