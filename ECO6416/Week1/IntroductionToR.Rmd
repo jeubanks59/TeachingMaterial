@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 For an example, let's install the package swirl:
 
 ```{r,eval=FALSE}
-install.packages(swirl)
+install.packages("swirl")
 ```
 
 This command pulls and stores the package into your library. If you want to actually use it, you must pull it from your library:
