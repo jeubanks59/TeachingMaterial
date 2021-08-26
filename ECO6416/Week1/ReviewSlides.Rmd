@@ -217,8 +217,8 @@ This measure helps determine if there is a strong linear relationship between tw
 - Correlation is not causation. The correlation between $x$ and $y$ is the same as $y$ and $x$, so it tells you nothing about causation. In fact, there might be a lurking variable that is impacting both
 
 ```{r, echo = T}
-data("ToothGrowth")
-cor(ToothGrowth$len,ToothGrowth$dose)
+hours <- c(3,2,2,5,4)
+cor(grades,hours)
 
 ```
 
