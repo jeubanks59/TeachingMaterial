@@ -1,0 +1,118 @@
+---
+title: "In Class Exercise 2"
+author: "Joshua L Eubanks"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(readxl)
+library(tidyverse)
+```
+
+# Wealth of 1 Percent
+
+This dataset was obtained from FRED which shows the share of total net worth held by the top 1%. It is represented over time.
+
+```{r wealth}
+wealth <- read_excel("../data/Wealth1percent.xlsx")
+
+summary(wealth)
+```
+
+This gives us a range of data from the third quarter of 1989 to the first quarter of 2021
+
+## Time Series Plot
+
+
+```{r wealthplot , message=F}
+ggplot(wealth, aes(quarter, Share))+
+  geom_line(color = 'gray40')+
+  geom_smooth(method = "lm", se = F, color = 'darkblue')+ #adds trendline
+  theme_bw()+
+  labs(title = "Share of Total Net Worth Held by the Top 1%",
+       subtitle = "99th to 100th Wealth Percentiles",
+       x = 'Date',
+       y = 'Wealth Share [%]')
+```
+
+
+## Time Series Regression
+
+We can see the trend in an upwards manner, let's see what the quarterly change in slope is:
+
+```{r wealth regression}
+wealthregression <- lm(Share ~ `Time Counter`, data = wealth)
+
+summaryWealth <- summary(wealthregression)
+
+summaryWealth
+```
+
+in this case, the share of wealth held by the top 1% is increasing by 0.05% each quarter.
+
+## Prediction
+
+Suppose we want to predict the share of wealth 2 quarters form now:
+
+```{r}
+
+x <- 127+2
+
+predicted <- summaryWealth$coefficients[1] + summaryWealth$coefficients[2]*x 
+MOE <- 2*summaryWealth$sigma
+
+lower <- predicted - MOE
+upper <- predicted + MOE
+
+paste("The predicted share of wealth is:", round(predicted, digits = 2), "plus or minus the margin of error of", round(MOE, digits = 2))
+
+```
+
+
+# Covid cases NYT
+
+This data was pulled for March 2020 for covid cases in the US
+
+```{r}
+covid <- read_excel("../data/Covid.xlsx")
+
+summary(covid)
+```
+
+## Plot
+
+```{r}
+
+```
+
+## Regression
+
+```{r}
+
+```
+
+
+## Prediction
+
+What would be the predicted number of cases by April 15, 2020?
+
+```{r}
+
+```
+
+## Thing 2 
+
+On average, how many new cases of covid are there daily?
+
+```{r}
+
+
+```
+

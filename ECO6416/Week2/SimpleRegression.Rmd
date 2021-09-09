@@ -10,8 +10,8 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
-library(plotly)
 library(gt)
+library(gtsummary)
 ```
 
 
@@ -38,8 +38,119 @@ Regression Analysis:
 
 - Both simple and multivariate regression measure and explain the variation of the dependent variable ($y$)
 
-- Make Decisions
-- Analyze Data
-- Identify Patterns, Trends, and Relationships
-- Identify and understand variation
+## Key Terms in Bivariate Analysis
+
+- **Scatterplot:** a two dimensional plot of bivariate-cross section data
+- **Time series plot:** a two dimensional plot with a quantitative time series variable on the vertical axis and time on the horizontal axis
+- **Trend Line:** a straight line showing the linear fit between a time series variable and time itself
+- **Trend rate:** slope of trend line
 - Use samples to draw conclusions about the population
+
+## Regression Equations
+
+$$\hat{y} = \beta_{0}+\beta_{1}*x_{1}+\varepsilon$$
+
+- $\hat{y}$ is the dependent variable, also referred to as *response* or *predicted* variable
+- $x$ is the independent variable, also referred to as *explanatory* or *predictor* variable
+- $\beta_{0}$ is the intercept
+- $\beta_{1}$ is the slope
+- $\varepsilon$ is the random disturbance, which is unknown
+
+## Analysis of Regression Equations
+
+**Prediction and forecasting (Thing 1: Plug and Chug):** plug in new observations into regression equation and calculate the predicted value of the dependent variable. The margin of error for 95% CI is 2*SEE. 
+
+**Marginal Analysis (Thing 2):** Multiply the change in one independent variable by its slope to find the predicted change in the dependent varaible. The margin of error will be covered in Unit 2
+
+## Trend Analysis
+
+When time is the independent variable the equation becomes:
+
+$$\hat{y} = \beta_{0}+\beta_{1}*Time+\varepsilon$$
+
+- Time trends: upward, downward, or no trend
+- Trend rates only apply to time trends
+- Trend rate is the coefficient of the time variable, or the slope regression equation ($\beta_{1}$)
+
+## Example: First Class Mail Volume
+
+```{r data import, echo=F}
+mail <- na.omit(readxl::read_excel("../data/FirstClassMail.xlsx"))
+```
+
+```{r scatterplot, message=F}
+ggplot(mail, aes(PopUSA, `1stClVol`))+
+  geom_point(color = 'gray40')+
+  geom_smooth(method = "lm", se = F, color = 'darkblue')+
+  theme_bw()+
+  labs(title = "Relationship between First Class Mail and US Population",
+       x = 'US Population [millions]',
+       y = 'First Class Mail Volume [millions]')
+```
+
+## Cross Section Regression
+
+```{r crossmodel, message=F, fig.width=6}
+model <- lm(data = mail, `1stClVol`~PopUSA)
+summary(model)
+```
+
+## Thing 1
+
+Based off this regression, the equation would look like: 
+
+$$1stClVol = -7.5 + 0.31*PopUSA$$
+
+Thing one would look like: If the population is expected to be 300 million, what is the expected amount of first class mail? 
+
+$$Expected 1stClVol = -7.5 + 0.31*300 = 85.5$$
+
+with a margin of error of $2*17.97 = 35.94$ 
+
+## Thing 2
+
+If the expected population is going to increase by 10 million in the next year, then
+
+$$\Delta 1stClVol = 0.31*10 = 3.1$$
+
+## Time Series
+
+```{r timeseries, message=F}
+ggplot(mail, aes(Yr, `1stClVol`))+
+  geom_line(color = 'gray40')+
+  geom_smooth(method = "lm", se = F, color = 'darkblue')+
+  theme_bw()+
+  labs(title = "First Class Mail Volume Over Time",
+       x = 'Year',
+       y = 'First Class Mail Volume [millions]')
+```
+
+
+
+## Time Series Regression
+
+```{r tsmodel, message=F, fig.width=6}
+model <- lm(data = mail, `1stClVol`~Time)
+summary(model)
+
+```
+
+## Thing 1
+
+Based off this regression, the equation would look like: 
+
+$$1stClVol = 45.4 + 0.81*YearsSince1960$$
+
+Thing one would look like: two years from now, what is the expected amount of first class mail? 
+
+$$Expected 1stClVol = 45.4 + 0.81*(60+2) = 95.62$$
+
+with a margin of error of $2*17.64 = 35.28$ 
+
+## Thing 2
+
+What is the quarterly rate of growth in first class mail volume?
+
+$$\Delta 1stClVol = 0.81*.25 = .20$$
+
+
