@@ -1,0 +1,45 @@
+---
+title: "ECO 6416: Simple Regression"
+author: "Joshua L Eubanks"
+date: "University of Central Florida"
+output:
+  beamer_presentation:
+    slide_level: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(plotly)
+library(gt)
+```
+
+
+## Linear Equations
+
+A linear equation in "slope-intercept" form has the following form:
+$$y = mx+b$$
+where $y$ is the dependent variable, $x$ is the independent variable, $m$ is the slope, $b$ is the intercept.
+
+A linear equation allows us to perform the following tasks:
+
+- summarize the relationship among variables in an equation
+- predict variable from data on related variables
+- sensitivity of variable to a related variable
+
+## Advantages of Regression vs Descriptive Statistics
+
+Descriptive Statistics:
+
+- Univariate analysis describes the center, shape, and spread
+- Bivariate analysis describes direction, strength, and form
+
+Regression Analysis:
+
+- Both simple and multivariate regression measure and explain the variation of the dependent variable ($y$)
+
+- Make Decisions
+- Analyze Data
+- Identify Patterns, Trends, and Relationships
+- Identify and understand variation
+- Use samples to draw conclusions about the population
